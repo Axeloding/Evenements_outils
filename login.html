@@ -1,0 +1,49 @@
+<!-- events/templates/events/login.html -->
+{% extends "events/base.html" %}
+
+{% block title %}Authentification - GéoPortail Événements{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: calc(100vh - 140px - 70px);"> {# Ajuster min-height pour tenir compte de navbar et footer #}
+    <div class="col-md-6 col-lg-5 col-xl-4">
+        <div class="content-card">
+            <div class="text-center mb-4"> 
+                <i class="bi bi-keychain display-3" style="color: var(--custom-primary);"></i>
+                <h2 class="mt-3 mb-1">Accès Sécurisé</h2>
+                <p class="text-muted small">Veuillez vous identifier pour continuer.</p>
+            </div>
+            
+            <form method="post" action="{% url 'events:login' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}" novalidate>
+                {% csrf_token %}
+                
+                {% for field in login_form %}
+                    <div class="form-floating mb-3">
+                        {{ field }} 
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {% if field.help_text %}
+                            <div class="form-text text-white-50 small ps-1 mt-1">{{ field.help_text }}</div>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <div class="text-danger small ps-1 mt-1"><i class="bi bi-exclamation-circle-fill"></i> {{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                {% if login_form.non_field_errors %}
+                    <div class="alert alert-danger py-2 px-3 small mb-3">
+                        {% for error in login_form.non_field_errors %}
+                            <i class="bi bi-shield-lock-fill"></i> {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                <div class="d-grid gap-2 mt-4"> 
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Connexion
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

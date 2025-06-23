@@ -1,0 +1,55 @@
+<!-- events/templates/events/upload_excel.html -->
+{% extends "events/base.html" %}
+
+{% block title %}Importation de Données - GéoPortail Événements{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="content-card">
+            <div class="text-center mb-4">
+                <i class="bi bi-file-earmark-arrow-up-fill display-3" style="color: var(--custom-primary);"></i>
+                <h2 class="mt-3 mb-1">Importer Fichier d'Événements</h2>
+                <p class="text-muted small">Sélectionnez votre fichier Excel (.xlsx ou .xls) à traiter.</p>
+            </div>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="{{ form.excel_file.id_for_label }}" class="form-label fs-5 mb-2">{{ form.excel_file.label }}</label>
+                    {{ form.excel_file }}
+                    {% if form.excel_file.help_text %}
+                        <div class="form-text mt-2 small" style="color: var(--bs-secondary-color);">
+                            <i class="bi bi-info-circle"></i> {{ form.excel_file.help_text }}
+                        </div>
+                    {% endif %}
+                    {% for error in form.excel_file.errors %}
+                        <div class="text-danger small ps-1 mt-1"><i class="bi bi-exclamation-circle-fill"></i> {{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-cloud-upload-fill me-2"></i>Lancer l'Importation
+                    </button>
+                </div>
+            </form>
+
+            <hr class="my-4">
+
+            <div class="alert alert-secondary border-0" role="alert" style="background-color: rgba(var(--bs-secondary-rgb), 0.1);">
+                <h4 class="alert-heading h6 mb-2" style="color: var(--custom-heading-color);"><i class="bi bi-card-checklist me-2"></i>Format Attendu & Modèle</h4>
+                <p class="mb-1 small">Colonnes attendues (après géocodage externe si besoin) :</p>
+                <ul class="list-unstyled mb-0 small ps-3">
+                    <li><strong>Essentiel :</strong> <code>{{ EVENT_NAME_COL }}</code>, <code>{{ LATITUDE_COL }}</code>, <code>{{ LONGITUDE_COL }}</code>.</li>
+                    <li><strong>Autres :</strong> <code>{{ CITY_COL }}</code>, <code>{{ COUNTRY_COL }}</code>, <code>{{ DESCRIPTION_COL }}</code>, <code>{{ EVENT_DATE_COL }}</code>, <code>{{ MAIL_COL }}</code>, <code>{{ BOOKER_NAME_COL }}</code>, <code>{{ PROMOTER_TYPE_COL }}</code>, <code>{{ STYLE_COL }}</code>.</li>
+                </ul>
+                <p class="mt-2 mb-1 small">Pour <strong>{{ EVENT_DATE_COL }}</strong> : <code>AAAA-MM-JJ</code> ou <code>AAAA-MM-JJ HH:MM:SS</code>.</p>
+                <p class="mb-0 mt-2 small">
+                    <i class="bi bi-download me-1"></i>
+                    <a href="{% url 'events:download_template' %}" class="alert-link fw-bold">Télécharger un fichier Excel modèle vierge</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
